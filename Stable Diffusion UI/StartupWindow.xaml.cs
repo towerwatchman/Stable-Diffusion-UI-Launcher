@@ -10,23 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Stable_Diffusion_UI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for StartupWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartupWindow : Window
     {
-        public MainWindow()
+        public StartupWindow()
         {
             InitializeComponent();
-            App.Current.MainWindow.Hide(); //hide the current window
-            StartupWindow startupWindow = new StartupWindow();
-            startupWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            startupWindow.Show();
         }
     }
 }
