@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Stable_Diffusion_UI"
         mc:Ignorable="d"
-        d:DesignHeight="250" d:DesignWidth="800" Background="#FF282A31" WindowStyle="None" ResizeMode="NoResize" MaxHeight="250" MaxWidth="800">
-    <Grid>
+        d:DesignHeight="255" d:DesignWidth="800" Background="#FF282A31" WindowStyle="None" ResizeMode="NoResize" MaxHeight="255" MaxWidth="800">
+    <Grid Height="255" VerticalAlignment="Center">
         <Image Height="225" VerticalAlignment="Top" Source="/bg.jpg" Stretch="UniformToFill"/>
         <Label Content="Stable Diffusion UI v2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="48" FontFamily="Helvetica Neue LT Pro">
             <Label.Effect>
                 <DropShadowEffect/>
             </Label.Effect>
         </Label>
-        <Label x:Name="lbStatus" Content="Loading . . . ." HorizontalAlignment="Center" Width="800" Height="25" VerticalAlignment="Top" Foreground="White" Margin="0,225,0,0"/>
+        <Label x:Name="lbStatus" Content="Loading . . . ." HorizontalAlignment="Center" Width="780" Height="30" VerticalAlignment="Top" Foreground="White" Margin="0,225,0,0"/>
 
     </Grid>
 </Window>
