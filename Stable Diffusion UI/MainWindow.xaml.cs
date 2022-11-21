@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Windows.Forms;
+using Application = System.Windows.Application;
 
 namespace Stable_Diffusion_UI
 {
@@ -23,19 +25,13 @@ namespace Stable_Diffusion_UI
     /// 
     public partial class MainWindow : Window
     {
-        [DllImport("kernel32.dll", EntryPoint = "GetStdHandle", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr GetStdHandle(int nStdHandle);
-
-        [DllImport("kernel32.dll", EntryPoint = "AllocConsole", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int AllocConsole();
-
-        private const int STD_OUTPUT_HANDLE = -11;
-        private const int MY_CODE_PAGE = 437;
-        private static bool showConsole = true; //Or false if you don't want to see the console
         private System.Windows.Forms.NotifyIcon notifyIcon;
-        private System.Windows.Forms.MenuItem menuItem = new System.Windows.Forms.MenuItem();
+        private System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
+        private System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
+        private System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
         private System.ComponentModel.Container components = new System.ComponentModel.Container();
         private System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
+        private UI_Console uI_Console;
         public MainWindow()
         {
             InitializeComponent();
@@ -44,11 +40,15 @@ namespace Stable_Diffusion_UI
             startupWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             startupWindow.Show();
 
+            uI_Console = new UI_Console();
+            uI_Console.Show();
+            ControlsInvoker.uiConsole = uI_Console.uiConsole;
+
             ControlsInvoker.startupWindow = startupWindow;
             //Console.Out.WriteLine(@"C:\stable-diffusion-ui\Start Stable Diffusion UI.cmd");
             ControlsInvoker.statusLabel(startupWindow.lbStatus);
-            Task.Run(() => ScriptLauncher.RunScript("cmd.exe", @"C:\stable-diffusion-ui\Start Stable Diffusion UI.cmd"," ", true, false));
-
+            Task.Run(() => ScriptLauncher.RunScript("cmd.exe", @"C:\stable-diffusion-ui\Start Stable Diffusion UI.cmd", " ", true, false));
+            App.Current.MainWindow.Hide(); //hide the current window
 
             //Notification Icon
             notifyIcon = new System.Windows.Forms.NotifyIcon();
@@ -59,21 +59,37 @@ namespace Stable_Diffusion_UI
             notifyIcon.Icon = new System.Drawing.Icon(iconStream);
             ShowTrayIcon(true);
             //Context Menu for Notification Icon
-            menuItem.Index = 0;
-            menuItem.Text = "Show Console Window";
-            menuItem.Click += MenuItem_Click;
+            menuItem1.Index = 0;
+            menuItem1.Text = "Show Console Window";
+            menuItem1.Click += MenuItemConsole_Click;
 
-            menuItem.Index = 1;
-            menuItem.Text = "Exit";
-            menuItem.Click += MenuItemExit_Click;
+            menuItem2.Index = 0;
+            menuItem2.Text = "Show Web Interface";
+            menuItem2.Click += MenuItemWeb_Click;
 
-            contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItem });
+            menuItem3.Index = 1;
+            menuItem3.Text = "Exit";
+            menuItem3.Click += MenuItemExit_Click;
+
+            contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItem1 });
+            contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItem2 });
+            contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItem3 });
+
             notifyIcon.ContextMenu = contextMenu;
         }
 
-        private void MenuItem_Click(object sender, EventArgs e)
+        //http://localhost:9000/
+        private void MenuItemWeb_Click(object sender, EventArgs e)
         {
-            
+            System.Diagnostics.Process.Start("http://localhost:9000/");
+        }
+        private void MenuItemConsole_Click(object sender, EventArgs e)
+        {
+            //uI_Console = new UI_Console();
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                uI_Console.Show();
+            }));
         }
         private void MenuItemExit_Click(object sender, EventArgs e)
         {
@@ -86,7 +102,7 @@ namespace Stable_Diffusion_UI
                 notifyIcon.Visible = show;
         }
 
-        private void Dispose ()
+        private void Dispose()
         {
             notifyIcon.Dispose();
             notifyIcon = null;

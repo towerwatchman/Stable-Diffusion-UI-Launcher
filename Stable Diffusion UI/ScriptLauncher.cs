@@ -12,6 +12,7 @@ namespace Stable_Diffusion_UI
     public static class ScriptLauncher
     {
         public static Process p = null;
+        private static OutputParser outputParser = new OutputParser();
         public static void RunScript(string rpath, string scriptpath, string arguments, bool RedirectStandardOutput, bool shellexc)
         {
             try
@@ -57,16 +58,19 @@ namespace Stable_Diffusion_UI
             {
                 if (e.Data != null)
                 {
-                    if (e.Data.Contains("Stable Diffusion is ready!"))
-                    {
-                        Console.Out.WriteLine(e.Data);
-                        ControlsInvoker.hideStartupWindow();
-                    }
-                    else
-                    {
-                        ControlsInvoker.updateStartup("Loading: " + e.Data);
-                        Console.Out.WriteLine(e.Data);
-                    }
+                    Task.Run(() => outputParser.parseString(e.Data.ToString()));
+                    //string tmp = e.Data.ToString();
+                    //if (e.Data.Contains("Stable Diffusion is ready!"))
+                    //{
+                        //Task.Run(() => ControlsInvoker.hideStartupWindow());
+                    //}
+                    //else
+                    //{
+                        //Task.Run(() => ControlsInvoker.updateStartup("Loading: " + tmp));
+                        //Task.Run(() => ControlsInvoker.UpdateUIconsole(tmp));
+                        //Console.Out.WriteLine(e.Data);
+                    //}
+                      //Task.Run(() => ControlsInvoker.UpdateUIconsole(tmp));
                 }
             }
             catch
